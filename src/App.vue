@@ -4,39 +4,54 @@ import Lien from "./components/Lien.vue";
 </script>
 
 <script lang="ts">
+interface DataObject {
+  ready: boolean;
+  count: number;
+  herokuUrl: string;
+  subtitle: string;
+  title: string;
+  btn: string;
+}
+
+
+const herokuUrl = String(import.meta.env.VITE_HEROKUURL);
+const subtitle = String(import.meta.env.VITE_SUBTITLE);
+const title = String(import.meta.env.VITE_TITLE);
+const btn = String(import.meta.env.VITE_BTN);
+
 export default {
-  data() {
+  data(): DataObject {
     return {
       ready: false,
       count: 0,
-      herokuUrl: import.meta.env.VITE_HEROKUURL,
-      subtitle: import.meta.env.VITE_SUBTITLE,
-      title: import.meta.env.VITE_TITLE,
-      title: import.meta.env.VITE_BTN,
+      herokuUrl: herokuUrl,
+      subtitle: subtitle,
+      title: title,
+      btn: btn,
     };
   },
   methods: {
     async checkReady() {
       if (this.count > 30) return false;
       setTimeout(async () => {
-        this.count++
+        this.count++;
         const response = await fetch(this.herokuUrl);
         console.log(response);
-        if(response.status === 200){
+        if (response.status === 200) {
           this.ready = true;
-        }else if(response.status === 404){
-          this.checkReady()
-        }else{
-          console.log('other problem');
-          this.checkReady()
+        } else if (response.status === 404) {
+          this.checkReady();
+        } else {
+          console.log("other problem");
+          this.checkReady();
         }
       }, 5000);
-    }
+    },
   },
-  created(){
-    this.checkReady()
-  }
-}
+  created() {
+    this.checkReady();
+  },
+};
 </script>
 
 <template>
@@ -52,8 +67,8 @@ export default {
   </header>
 
   <main>
-    <HelloWorld v-if="!ready" :msg=title :subtitle=subtitle />
-    <Lien v-if="ready" :msg=btn :href=herokuUrl />
+    <HelloWorld v-if="!ready" :msg="title" :subtitle="subtitle" />
+    <Lien v-if="ready" :msg="btn" :href="herokuUrl" />
   </main>
 </template>
 
